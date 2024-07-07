@@ -5,12 +5,10 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
+password = os.getenv('password')
 # Dictionary mapping passwords to usernames
 password_to_user = {
-    'password_a': 'User A',
-    'password_b': 'User B',
-    # Add more as needed
+    password: 'Admin A'
 }
 
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
