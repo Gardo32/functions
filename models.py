@@ -1,14 +1,17 @@
-# models.py
+import pandas as pd
 
-from main import db  # Adjust import based on your actual module structure
+def pad_keys_with_zeros(dct):
+    keys_to_update = list(dct.keys())
+    for key in keys_to_update:
+        new_key = key
+        while len(new_key) < 10:
+            new_key = '0' + new_key
+        if new_key != key:
+            dct[new_key] = dct.pop(key)
 
-# Define your SQLAlchemy models below
-class User(db.Model):
-    __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, index=True)
-    email = db.Column(db.String(120), unique=True, index=True)
+df = pd.read_csv('Book1.csv', encoding='latin1')
 
-    def __repr__(self):
-        return f'<User {self.username}>'
+password_to_user = {str(row[1]): row[0] for _, row in df.iterrows()}
+
+
