@@ -6,19 +6,24 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 
 load_dotenv()
+
+# Construct database URI
 params = os.getenv('params')
+
+# Initialize Flask app
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
 app.config['SECRET_KEY'] = 'supersecret'
-app.config['SQLALCHEMY_DATABASE_URI'] = params
+
+# Configure SQLAlchemy to use pyodbc with params
+app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
+# Initialize SQLAlchemy
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
 
-# Import the User model
-from models import User
+# Import models (if using separate models.py file)
+from models import User  # Adjust import as per your project structure
 
 @login_manager.user_loader
 def load_user(user_id):
