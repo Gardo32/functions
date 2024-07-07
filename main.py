@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import LoginForm  # Assuming you have a LoginForm defined in forms.py
-from calc import calculate_gpa
 from dotenv import load_dotenv
 import os
 from models import password_to_user, pad_keys_with_zeros
@@ -52,30 +51,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-@app.route('/gpa', methods=['GET', 'POST'])
-@login_required
-def gpa():
-    if request.method == 'POST':
-        num_subjects = int(request.form['num_subjects'])
-        
-        marks_list = []
-        hours_list = []
-        
-        for i in range(num_subjects):
-            marks = int(request.form[f'marks_{i+1}'])
-            hours = int(request.form[f'hours_{i+1}'])
-            marks_list.append(marks)
-            hours_list.append(hours)
-        
-        final_gpa = calculate_gpa(num_subjects, marks_list, hours_list)
-        
-        return render_template('gpa.html', final_gpa=final_gpa, name=current_user.id, num_subjects=num_subjects)
-    
-    num_subjects = 0 
-    
-    return render_template('gpa.html', name=current_user.id, num_subjects=num_subjects)
-
 
 
 if __name__ == '__main__':
