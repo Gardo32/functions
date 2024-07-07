@@ -56,3 +56,33 @@ h2 {
 .btn:hover {
     background-color: #0056b3;
 }
+/* src/static/css/style.css */
+
+.button-container {
+    margin-top: 20px;
+    flex: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #007bff; /* Blue background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
