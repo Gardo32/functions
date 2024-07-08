@@ -8,6 +8,20 @@ from admin import password_to_admin
 
 load_dotenv()
 
+RFID0Corrector(password_to_user) # Remove if not using NFC reader
+RFID0Corrector(password_to_admin) # Remove if not using NFC reader
+
+"""# For testing 
+password_to_user = {
+    "1234567890": "user1",
+    "9876543210": "user2"
+}
+
+password_to_admin = {
+    "1234567890": "admin1"
+}
+"""
+
 password = os.getenv('password') 
 
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
