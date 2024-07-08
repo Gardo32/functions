@@ -1,6 +1,6 @@
 import pandas as pd
 
-def pad_keys_with_zeros(dct):
+def RFID0Corrector(dct):
     keys_to_update = list(dct.keys())
     for key in keys_to_update:
         new_key = key
@@ -10,7 +10,7 @@ def pad_keys_with_zeros(dct):
             dct[new_key] = dct.pop(key)
 
 
-df = pd.read_csv('Book1.csv', encoding='latin1')
+df = pd.read_csv('Users.csv', encoding='latin1')
 
 password_to_user = {str(row[1]): row[0] for _, row in df.iterrows()}
 

@@ -4,10 +4,17 @@ from forms import LoginForm  # Assuming you have a LoginForm defined in forms.py
 from calc import calculate_gpa
 from dotenv import load_dotenv
 import os
-from models import password_to_user, pad_keys_with_zeros
+from users import password_to_user, RFID0Corrector
 
 load_dotenv()
-pad_keys_with_zeros(password_to_user)
+RFID0Corrector(password_to_user) # Remove if not using NFC reader
+
+"""# For testing 
+password_to_user = {
+    "1234567890": "user1",
+    "9876543210": "user2"
+}
+"""
 
 password = os.getenv('password') 
 
