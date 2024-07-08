@@ -1,7 +1,9 @@
-# Flask Web App Starter
-
-A Flask starter template as per [these docs](https://flask.palletsprojects.com/en/3.0.x/quickstart/#a-minimal-application).
+# Single-Password/Card Login Page
 
 ## Getting Started
 
-Previews should run automatically when starting a workspace.
+Create a ```.env``` file same as shown below then add your password/Card-id as the value or scan your RFID card to set it as the input key.
+
+```
+password = ""
+```
