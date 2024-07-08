@@ -16,6 +16,6 @@ def dfToDict(df):
 df = pd.read_csv('Users.csv', encoding='latin1')
 
 password_to_user = dfToDict(df)
-RFID0Corrector(password_to_user)
+
 
 

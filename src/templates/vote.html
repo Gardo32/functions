@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="red">Welcome to the vote, {{ name }}!</h2>
+        <form id="vote-form">
+            <div class="form-group">
+                <label><input type="radio" name="choice" value="Choice 1" class="form-control"> Choice 1</label><br>
+                <label><input type="radio" name="choice" value="Choice 2" class="form-control"> Choice 2</label><br>
+                <label><input type="radio" name="choice" value="Choice 3" class="form-control"> Choice 3</label><br>
+                <label><input type="radio" name="choice" value="Choice 4" class="form-control"> Choice 4</label><br>
+                <label><input type="radio" name="choice" value="Choice 5" class="form-control"> Choice 5</label><br>
+                <label><input type="radio" name="choice" value="Choice 6" class="form-control"> Choice 6</label><br>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn">Submit Vote</button>
+            </div>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script src="{{ url_for('static', filename='vote.js') }}"></script>
+{% endblock %}

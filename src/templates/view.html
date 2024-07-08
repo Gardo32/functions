@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="red">Vote Results</h2>
+
+    <!-- Vote Logs -->
+    <div class="vote-logs">
+        <h3>Vote Logs</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Choice</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vote in votes %}
+                <tr>
+                    <td>{{ vote.user_id }}</td>
+                    <td>{{ vote.choice }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        <!-- Vote Counts -->
+    <div class="vote-counts">
+        <h3>Vote Counts</h3>
+        <ul>
+            {% for choice, count in vote_counts.items() %}
+            <li>{{ choice }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Download CSV -->
+    <div class="download-csv">
+        <h3>Download Votes CSV</h3>
+        <a href="{{ url_for('download_csv') }}" class="button">Download CSV</a>
+    </div>
+
+{% endblock %}
