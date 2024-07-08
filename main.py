@@ -1,15 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from forms import LoginForm  # Assuming you have a LoginForm defined in forms.py
+from forms import LoginForm 
 from dotenv import load_dotenv
 import os
-from models import password_to_user, pad_keys_with_zeros
+from users import password_to_user
+from admin import password_to_admin
 
 load_dotenv()
-pad_keys_with_zeros(password_to_user)
 
 password = os.getenv('password') 
-
 
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -22,15 +21,27 @@ login_manager.login_view = 'login'
 class User(UserMixin):
     def __init__(self, username):
         self.id = username
+        self.is_admin = username in password_to_admin.values()
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User(user_id)
+    if user_id in password_to_user.values():
+        return User(user_id)
+    elif user_id in password_to_admin.values():
+        return User(user_id)
+    return None
 
 @app.route('/')
 @login_required
 def home():
     return render_template('home.html', name=current_user.id)
+
+@app.route('/admin')
+@login_required
+def admin():
+    if current_user.is_admin:
+        return render_template('admin.html', name=current_user.id)
+    return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -42,6 +53,11 @@ def login():
             user = User(username)
             login_user(user)
             return redirect(url_for('home'))
+        elif password_attempt in password_to_admin:
+            username = password_to_admin[password_attempt]
+            user = User(username)
+            login_user(user)
+            return redirect(url_for('admin'))
         else:
             return 'Invalid credentials', 401
     return render_template('login.html', form=form)
@@ -51,7 +67,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)

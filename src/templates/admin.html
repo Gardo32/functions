@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="red">Welcome, {{ name }}!</h2>
+    
+    <div class="button-container">
+        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+        <!-- Add more buttons for other routes as needed -->
+    </div>
+{% endblock %}
