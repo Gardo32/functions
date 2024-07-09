@@ -135,5 +135,17 @@ def download_csv():
     else:
         return "Unauthorized Access", 403
 
+@app.route('/delete_csv')
+@login_required
+def delete_csv():
+    if current_user.id in password_to_admin.values():
+        if os.path.exists(votes_file):
+            os.remove(votes_file)
+            return redirect(url_for('view_results'))
+        else:
+            return "No votes.csv file found", 404
+    else:
+        return "Unauthorized Access", 403
+
 if __name__ == '__main__':
     app.run(debug=True)

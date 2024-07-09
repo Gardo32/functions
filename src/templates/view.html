@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2 class="red">Vote Results</h2>
+    <h2>Vote Logs</h2>
 
-    <!-- Vote Logs -->
-    <div class="vote-logs">
-        <h3>Vote Logs</h3>
-        <table class="table">
+    <div class="table-container">
+        <table>
             <thead>
                 <tr>
                     <th>User ID</th>
@@ -23,20 +21,40 @@
             </tbody>
         </table>
     </div>
-        <!-- Vote Counts -->
-    <div class="vote-counts">
-        <h3>Vote Counts</h3>
-        <ul>
-            {% for choice, count in vote_counts.items() %}
-            <li>{{ choice }}: {{ count }}</li>
-            {% endfor %}
-        </ul>
+
+    <h2>Vote Counts</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Choice</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for choice, count in vote_counts.items() %}
+                <tr>
+                    <td>{{ choice }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Download CSV -->
-    <div class="download-csv">
-        <h3>Download Votes CSV</h3>
+    <div class="button-container">
         <a href="{{ url_for('download_csv') }}" class="button">Download CSV</a>
+        <button class="button delete-button" onclick="confirmDelete()">Delete CSV</button>
     </div>
 
+    <script>
+        function confirmDelete() {
+    if (confirm("Are you sure you want to delete the votes.csv file? This action cannot be undone.")) {
+        window.location.href = "{{ url_for('delete_csv') }}";
+    }
+}
+    </script>
 {% endblock %}
+
+
+
