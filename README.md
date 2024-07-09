@@ -25,7 +25,7 @@ This repository contains a combination of mini-projects. Each mini-project focus
   - Automatic user determination based on password.
 
 
-### [Voting App](https://github.com/Gardo32/functions/tree/Voting-App)
+### 4. [Voting App](https://github.com/Gardo32/functions/tree/Voting-App)
 - **Description:** A web-based voting application that allows users to cast votes and administrators to manage and view results.
 - **Features:**
   - User and admin authentication using credentials from CSV files.
