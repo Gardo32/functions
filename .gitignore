@@ -2,4 +2,5 @@
 .env
 Users.csv
 admin.csv
-votes.csv
+csv
+logs

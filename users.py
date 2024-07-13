@@ -13,7 +13,7 @@ def dfToDict(df):
     return {str(row[1]): row[0] for _, row in df.iterrows()}
 
 
-df = pd.read_csv('Users.csv', encoding='latin1')
+df = pd.read_csv('csv/Users.csv', encoding='latin1')
 
 password_to_user = dfToDict(df)
 
