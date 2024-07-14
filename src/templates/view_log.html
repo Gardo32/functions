@@ -14,4 +14,8 @@
         </tr>
         {% endfor %}
     </table>
+    <div class="button-container">
+        <a href="{{ url_for('download_log', filename=filename) }}" class="button green">Download Log</a>
+        <a href="{{ url_for('list_logs') }}" class="button">Back to Logs</a>
+    </div>
 {% endblock %}
