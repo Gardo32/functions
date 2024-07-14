@@ -19,3 +19,5 @@ def logging(user_id, action):
     new_log = pd.DataFrame({'user_id': [user_id], 'action': [action], 'timestamp': [dt.datetime.now()]})
     log_df = pd.concat([log_df, new_log], ignore_index=True)
     log_df.to_csv(logfile, index=False)
+
+

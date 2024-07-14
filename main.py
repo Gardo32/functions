@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
+from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import LoginForm  
 from dotenv import load_dotenv
@@ -17,6 +17,7 @@ RFID0Corrector(password_to_admin) # Remove if not using NFC reader
 votes_file = "csv/votes.csv"
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
 app.config['SECRET_KEY'] = 'your_secret_key'
+LOGS_FOLDER = os.path.join(app.root_path, 'logs')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -39,6 +40,11 @@ def load_user(user_id):
     elif user_id in password_to_admin.values():
         return Admin(user_id)
     return None
+
+# Define the enumerate filter
+@app.template_filter('enumerate')
+def enumerate_filter(sequence, start=0):
+    return enumerate(sequence, start)
 
 @app.route('/')
 @login_required
@@ -129,7 +135,7 @@ def view_results():
         votes = votes_df.to_dict(orient='records')
         return render_template('view.html', votes=votes, vote_counts=vote_counts)
     else:
-        return "Unauthorized Access", 403 
+        return redirect(url_for('unauthorized')) 
 
 @app.route('/download_csv')
 @login_required
@@ -139,7 +145,7 @@ def download_csv():
     if current_user.id in password_to_admin.values():
         return send_file(votes_file, as_attachment=True, cache_timeout=0)
     else:
-        return "Unauthorized Access", 403
+        return redirect(url_for('unauthorized'))
 
 @app.route('/delete_csv')
 @login_required
@@ -153,7 +159,49 @@ def delete_csv():
         else:
             return "No votes.csv file found", 404
     else:
-        return "Unauthorized Access", 403
+        return redirect(url_for('unauthorized'))
+
+@app.route('/unauthorized')
+def unauthorized():
+    return render_template('unoth.html'), 403
+
+@app.route('/logs')
+@login_required
+def list_logs():
+    if current_user.get_id() not in password_to_admin.values():
+        return redirect(url_for('unauthorized'))
+    
+    log_files = [f for f in os.listdir(LOGS_FOLDER) if os.path.isfile(os.path.join(LOGS_FOLDER, f))]
+    return render_template('list_logs.html', log_files=log_files)
+
+@app.route('/logs/<filename>')
+@login_required
+def view_log(filename):
+    user_id = current_user.id
+    logging(user_id,'Opened log file ' + filename)
+    if current_user.get_id() not in password_to_admin.values():
+        return redirect(url_for('unauthorized'))
+    
+    if not os.path.isfile(os.path.join(LOGS_FOLDER, filename)):
+        return "File not found", 404
+    
+    with open(os.path.join(LOGS_FOLDER, filename)) as file:
+        log_content = file.readlines()
+    
+    return render_template('view_log.html', filename=filename, log_content=log_content)
+
+@app.route('/logs/download/<filename>')
+@login_required
+def download_log(filename):
+    user_id = current_user.id
+    logging(user_id, 'Downloaded log file ' + filename)
+    if current_user.get_id() not in password_to_admin.values():
+        return redirect(url_for('unauthorized'))
+    
+    if not os.path.isfile(os.path.join(LOGS_FOLDER, filename)):
+        return "File not found", 404
+    
+    return send_from_directory(LOGS_FOLDER, filename, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
