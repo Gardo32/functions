@@ -3,7 +3,6 @@ import os
 import pandas as pd
 
 def checklog():
-    global logfile
     logfile = 'logs/' + 'log-' + dt.datetime.now().strftime('%Y-%m-%d') + '.csv'
     con = os.path.exists(logfile)
     if not con:
@@ -15,6 +14,7 @@ def checklog():
 
 def logging(user_id, action):
     global logfile
+    logfile = 'logs/' + 'log-' + dt.datetime.now().strftime('%Y-%m-%d') + '.csv'
     log_df = checklog()
     new_log = pd.DataFrame({'user_id': [user_id], 'action': [action], 'timestamp': [dt.datetime.now()]})
     log_df = pd.concat([log_df, new_log], ignore_index=True)

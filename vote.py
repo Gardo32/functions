@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 def load_votes_df():
-    votes_file = 'votes.csv'
+    votes_file = 'csv/votes.csv'
     if os.path.exists(votes_file):
         return pd.read_csv(votes_file)
     else:
@@ -15,7 +15,7 @@ def record_vote(user_id, choice):
     votes_df = load_votes_df()
     new_vote = pd.DataFrame({'user_id': [user_id], 'choice': [choice]})
     votes_df = pd.concat([votes_df, new_vote], ignore_index=True)
-    votes_df.to_csv('votes.csv', index=False)
+    votes_df.to_csv('csv/votes.csv', index=False)
 
 def has_voted(user_id):
     global votes_df

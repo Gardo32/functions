@@ -3,8 +3,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from forms import LoginForm  
 from dotenv import load_dotenv
 import os
-from users import password_to_user, RFID0Corrector
-from admin import password_to_admin
+from users import password_to_user, RFID0Corrector, addUser, reload_users_csv
+from admin import password_to_admin, reload_admin_csv
 import vote
 import pandas as pd
 import datetime as dt
@@ -15,6 +15,11 @@ RFID0Corrector(password_to_user) # Remove if not using NFC reader
 RFID0Corrector(password_to_admin) # Remove if not using NFC reader
 
 votes_file = "csv/votes.csv"
+adminfile = "csv/admin.csv"
+userfile = "csv/Users.csv"
+
+
+
 app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
 app.config['SECRET_KEY'] = 'your_secret_key'
 LOGS_FOLDER = os.path.join(app.root_path, 'logs')
@@ -49,9 +54,12 @@ def enumerate_filter(sequence, start=0):
 @app.route('/')
 @login_required
 def home():
-    user_id = current_user.id
-    logging(user_id, 'Logged in to home page')
-    return render_template('home.html', name=current_user.id)
+    if current_user.is_admin:
+        return redirect(url_for('admin'))
+    else:
+        user_id = current_user.id
+        logging(user_id, 'Logged in to home page')
+        return render_template('home.html', name=current_user.id)
 
 @app.route('/admin')
 @login_required
@@ -64,7 +72,8 @@ def admin():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    checklog()
+    users_df = reload_users_csv()
+    admin_df = reload_admin_csv()
     form = LoginForm()
     if form.validate_on_submit():
         password_attempt = form.password.data
@@ -80,7 +89,7 @@ def login():
             return redirect(url_for('admin'))
         else:
             return 'Invalid credentials', 401
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, users=users_df, admins=admin_df)
 
 @app.route('/logout')
 @login_required
@@ -202,6 +211,23 @@ def download_log(filename):
         return "File not found", 404
     
     return send_from_directory(LOGS_FOLDER, filename, as_attachment=True)
+
+@app.route('/add_user', methods=['POST'])
+@login_required
+def add_user():
+    if not current_user.is_admin:
+        return redirect(url_for('unauthorized')), 403
+    
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if username and password:
+        addUser(username, password)
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False, message="Invalid data"), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)
